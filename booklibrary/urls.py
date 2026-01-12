@@ -14,7 +14,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from books import views
+from django.contrib import admin
+from books import views as books_views
+from reader import views as reader_views
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.urls import path
 from django.urls import path, re_path, include
@@ -34,8 +36,11 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 urlpatterns = [
-    path("books/",views.Bookslist.as_view()),
-    path("books/<int:pk>/",views.BooksDetail.as_view()),
+    path("admin/",admin.site.urls),
+    path("books/",books_views.Bookslist.as_view()),
+    path("books/<int:pk>/",books_views.BooksDetail.as_view()),
+    path("reader/",reader_views.Readerlist.as_view()),
+    path("reader/<int:pk>/",reader_views.ReaderDetail.as_view()),
     
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
