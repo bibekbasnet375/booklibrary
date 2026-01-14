@@ -7,6 +7,7 @@ from drf_yasg.utils import swagger_auto_schema
 from reader.serializers import ReaderSerializer
 from django.shortcuts import get_object_or_404
 
+
 class Readerlist(APIView):
 
     @swagger_auto_schema(responses={200: ReaderSerializer(many=True)})

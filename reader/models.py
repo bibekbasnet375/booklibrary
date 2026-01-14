@@ -3,15 +3,16 @@ import math
 from datetime import timedelta
 from django.utils import timezone
 
-class BookReader(models.Model):
-    book = models.ForeignKey("books.Books", on_delete=models.CASCADE)
+class Bookborrowed(models.Model):
+    book = models.ForeignKey("books.Books", on_delete=models.CASCADE, related_name="borrowed_records")
     reader = models.ForeignKey("reader.Reader", on_delete=models.CASCADE)
     due_date = models.DateField(default=timezone.now)
+    returned = models.BooleanField(default=False)
 
-    def get_remaining_days(self):
-        due_date = self.due_date
-        now = timezone.now()
-        return math.floor(timedelta(now-due_date)/86400)
+    def remaining_days(self):
+        now = timezone.now().date()
+        remaining_days= (self.due_date-now).days
+        return max(remaining_days, 0)
 
 class Reader(models.Model):
     Full_name= models.CharField(max_length=50)

@@ -6,6 +6,7 @@ from books.models import Books
 from drf_yasg.utils import swagger_auto_schema
 from books.serializers import BooksSerializer
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import ValidationError
 
 
 class Bookslist(APIView):
@@ -25,6 +26,10 @@ class Bookslist(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class BooksDetail(APIView):
+
+#APIView does not provide get_object(), so we must define it manually when using CBV with APIView.
+    def get_object(self, pk):
+        return get_object_or_404(Books, pk=pk)
     
     @swagger_auto_schema(request_body=BooksSerializer)
     def put(self, request, pk, format=None):
@@ -40,3 +45,18 @@ class BooksDetail(APIView):
         books = get_object_or_404(Books, pk=pk)
         books.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ReaderCount(APIView):
+     def get_object(self, pk):
+        return get_object_or_404(Books, pk=pk)
+     
+     @swagger_auto_schema(request_body=BooksSerializer)
+     def put(self, request, pk, format=None):
+        books = self.get_object(pk)
+        serializer= BooksSerializer(books, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status= status.HTTP_404_NOT_FOUND)
+        

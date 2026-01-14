@@ -1,10 +1,11 @@
 from rest_framework import serializers
 from reader.models import Reader
-from reader.models import BookReader
+from reader.models import Bookborrowed
+from rest_framework.response import Response
 
-class BookreaderSerializer(serializers.ModelSerializer):
+class BookborrowedSerializer(serializers.ModelSerializer):
     class Meta:
-        model= BookReader
+        model= Bookborrowed
         fields= "__all__"
 
 class ReaderSerializer(serializers.ModelSerializer):
@@ -13,6 +14,7 @@ class ReaderSerializer(serializers.ModelSerializer):
         fields= ["id","Full_name","Email","Address","Book_borrowed","contact_no"]
     Book_borrowed= serializers.SerializerMethodField(method_name="get_book_borrowed")
 
-    def get_book_borrowed(self, request, format=None):
-        books= BookReader.objects.all()
-        return BookreaderSerializer(books, many= True)
+    def get_book_borrowed(self, obj):
+        books= Bookborrowed.objects.filter(reader=obj)
+        serializer = BookborrowedSerializer(books, many= True)
+        return (serializer.data)

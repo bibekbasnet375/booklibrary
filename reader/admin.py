@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Reader, BookReader
+from .models import Reader, Bookborrowed
 
 @admin.register(Reader)
 class ReaderAdmin(admin.ModelAdmin):
@@ -7,11 +7,16 @@ class ReaderAdmin(admin.ModelAdmin):
     search_fields= ("contact_no","id")
     list_filter= ("Full_name",) 
 
-@admin.register(BookReader)
-class BookReaderAdmin(admin.ModelAdmin):
-    list_display= ("book","reader","due_date")
+    
+
+@admin.register(Bookborrowed)
+class BookborrowwedAdmin(admin.ModelAdmin):
+    list_display= ("book","reader","due_date","remaining_days")
     search_fields= ("due_date","book")
     list_filter=("book",)
+
+    def remaining_days(self,obj):
+        return obj.remaining_days()
 
 
 

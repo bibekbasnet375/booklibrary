@@ -41,6 +41,7 @@ urlpatterns = [
     path("books/<int:pk>/",books_views.BooksDetail.as_view()),
     path("reader/",reader_views.Readerlist.as_view()),
     path("reader/<int:pk>/",reader_views.ReaderDetail.as_view()),
+    path("books/<int:pk>/",books_views.ReaderCount.as_view()),
     
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
